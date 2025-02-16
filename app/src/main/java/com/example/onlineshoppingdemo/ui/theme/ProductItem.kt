@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*   
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import com.example.onlineshoppingdemo.Product
 import androidx.compose.ui.graphics.Color
@@ -17,12 +18,13 @@ import androidx.compose.ui.graphics.Color
 @Composable
 fun ProductItem(product: Product, onClick: () -> Unit) {
     Card(
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(4.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiary),
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable {onClick()},
+            .clickable {onClick()}
+            .shadow(8.dp),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = product.name, style = MaterialTheme.typography.titleLarge)

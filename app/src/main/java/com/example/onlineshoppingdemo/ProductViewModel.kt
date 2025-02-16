@@ -1,22 +1,38 @@
 package com.example.onlineshoppingdemo
 
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
-class ProductViewModel : ViewModel() {
-    private val repository = ProductRepository()
-    // Mutable state flow for products
-    private val _products = MutableStateFlow<List<Product>>(emptyList())
-    // Expose a read-only state flow
-    val products: StateFlow<List<Product>> = _products.asStateFlow()
+import com.example.onlineshoppingdemo.data.*
 
+
+class ProductViewModel(application: Application) : AndroidViewModel(application) {
+    private val productDao = ProductDatabase.getDatabase(application).productDao()
+    private val repository = ProductRepository(productDao)
+
+    val products: StateFlow<List<Product>> = repository.products
+        .map { entities -> entities.map { Product(it.id, it.name, it.price, it.description) } }
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+    // insert several products into the database for display
     init {
-        loadProducts()
-    }
-
-    private fun loadProducts() {
-        _products.value = repository.getProducts()
+        viewModelScope.launch {
+            if (repository.products.stateIn(viewModelScope).value.isEmpty()) {
+                repository.insertProducts(
+                    listOf(
+                        ProductEntity(name = "Nike Air Max", price = 150.0, description = "Description for Nike Air Max"),
+                        ProductEntity(name = "Adidas Ultraboost", price = 180.0, description = "Description for Adidas Ultraboost"),
+                        ProductEntity(name = "Puma RS-X", price = 120.0, description = "Description for Puma RS-X")
+                    )
+                )
+            }
+        }
     }
 }

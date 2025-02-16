@@ -1,15 +1,28 @@
 package com.example.onlineshoppingdemo
 
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.example.onlineshoppingdemo.data.ProductDatabase
+import com.example.onlineshoppingdemo.data.ProductRepository
 
-class ProductDetailViewModel : ViewModel() {
-    private val repository = ProductRepository()
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+
+class ProductDetailViewModel(application: Application) : AndroidViewModel(application) {
+    private val productDao = ProductDatabase.getDatabase(application).productDao()
+    private val repository = ProductRepository(productDao)
+
     private val _product = MutableStateFlow<Product?>(null)
-    val product: StateFlow<Product?> = _product
+    val product: StateFlow<Product?> = _product.asStateFlow()
 
     fun loadProduct(productId: Int) {
-        _product.value = repository.getProducts().find { product -> product.id == productId }
+        viewModelScope.launch {
+            repository.products
+                .map { productList -> productList.find { it.id == productId } }
+                .collect { entity ->
+                    _product.value = entity?.let { Product(it.id, it.name, it.price, it.description) }
+                }
+        }
     }
 }
