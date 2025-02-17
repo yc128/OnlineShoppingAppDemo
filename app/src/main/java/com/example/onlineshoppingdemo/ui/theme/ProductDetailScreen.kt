@@ -4,12 +4,14 @@ package com.example.onlineshoppingdemo.ui.theme
 import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
@@ -30,7 +32,7 @@ fun ProductDetailScreen(
     productId: Int?,
     navController: NavController,
     ) {
-
+    Log.d("ProductDetailScreen", "About to load product ")
     val context = LocalContext.current.applicationContext as Application
     val viewModel: ProductDetailViewModel = viewModel(factory = ProductDetailViewModelFactory(context))
 
@@ -67,28 +69,48 @@ fun ProductDetailScreen(
         Column(
             modifier = Modifier
                 .padding(paddingValues)
-                .padding(16.dp)
+
         ) {
             if (product != null) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = product.name, style = MaterialTheme.typography.headlineMedium)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Price: $${product.price}",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Description: ${product.description}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                Box(modifier = Modifier.fillMaxSize()){
+                    // Draw image
+                    ProductImage(imageResId = product.imageResId)
+
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.7f)
+                            .align(Alignment.BottomCenter),
+                        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 8.dp
+                        )
+                    ) {
+                            // Other text info
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Text(text = product.name, style = MaterialTheme.typography.headlineMedium)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Price: $${product.price}",
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Description: ${product.description}",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+
+                    }
                 }
+
+
+
             } else {
                 Text(text = "Product not found", style = MaterialTheme.typography.bodyLarge)
             }
         }
     }
-
 
 
 }

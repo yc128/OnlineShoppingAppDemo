@@ -1,6 +1,7 @@
 package com.example.onlineshoppingdemo.ui.theme
 
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -29,7 +30,6 @@ import com.example.onlineshoppingdemo.ProductViewModel
 @Composable
 fun MainScreen(viewModel: ProductViewModel = viewModel(), navController: NavController) {
     val products by viewModel.products.collectAsState()
-
 
     Scaffold(
         //Add top bar to main screen

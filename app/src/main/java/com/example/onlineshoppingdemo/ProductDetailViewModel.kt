@@ -6,6 +6,7 @@ import com.example.onlineshoppingdemo.data.ProductRepository
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.onlineshoppingdemo.data.Product
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -21,7 +22,7 @@ class ProductDetailViewModel(application: Application) : AndroidViewModel(applic
             repository.products
                 .map { productList -> productList.find { it.id == productId } }
                 .collect { entity ->
-                    _product.value = entity?.let { Product(it.id, it.name, it.price, it.description) }
+                    _product.value = entity?.let { Product(it.id, it.name, it.price, it.description, it.imageResId) }
                 }
         }
     }

@@ -8,8 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
-import com.example.onlineshoppingdemo.Product
-import androidx.compose.ui.graphics.Color
+import com.example.onlineshoppingdemo.data.Product
 
 
 /**
