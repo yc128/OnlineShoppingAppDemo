@@ -9,6 +9,19 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for managing the cart in the shopping application.
+ *
+ * **ViewModel and Repository interaction:**
+ * - The ViewModel uses a `ProductRepository` to interact with the database and fetch product data.
+ * - The product details are stored in a private `_product` mutable `StateFlow`, which is then exposed
+ * as a read-only `StateFlow` (`product`) to the UI.
+ *
+ * **Key responsibilities:**
+ * - Manage cart items (add, remove, update quantity).
+ * - Calculate and expose the total price of the cart.
+ * - Ensure the cart's state survives configuration changes (e.g., screen rotation).
+ */
 class CartViewModel(application: Application) : AndroidViewModel(application) {
     private val cartDao = ProductDatabase.getDatabase(application).cartDao()
     private val repository = CartRepository(cartDao)

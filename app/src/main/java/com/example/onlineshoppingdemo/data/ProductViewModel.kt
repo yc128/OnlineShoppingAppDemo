@@ -11,7 +11,25 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-
+/**
+ * ViewModel for managing the product list in the shopping application.
+ *
+ * This ViewModel is responsible for interacting with the repository layer to retrieve and manage
+ * a list of products. It exposes the product list to the UI layer as a `StateFlow`, which allows the
+ * UI to reactively update whenever the list changes.
+ *
+ * **Key responsibilities:**
+ * - Fetch the list of products from the database through the repository.
+ * - Expose the product list to the UI in a reactive `StateFlow` so that the UI automatically
+ *   updates when the list changes.
+ * - Insert some sample products into the database for display if the product list is empty.
+ *
+ * **ViewModel and Repository interaction:**
+ * - The ViewModel communicates with the `ProductRepository`, which handles the data access logic.
+ * - The list of products is exposed as a `StateFlow`, ensuring that the UI gets updated automatically
+ *   whenever the data changes.
+ * - If the product list is empty, some sample products are inserted into the database as a default set.
+ */
 class ProductViewModel(application: Application) : AndroidViewModel(application) {
     private val productDao = ProductDatabase.getDatabase(application).productDao()
     private val repository = ProductRepository(productDao)
