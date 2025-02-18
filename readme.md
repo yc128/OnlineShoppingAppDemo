@@ -26,7 +26,7 @@ This is a sample Android application that demonstrates the basic functionalities
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/onlineshoppingdemo.git
+git clone https://github.com/yc128/OnlineShoppingAppDemo
 ```
 
 ### 2. Open the project
