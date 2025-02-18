@@ -4,23 +4,31 @@ package com.example.onlineshoppingdemo.ui.theme
 import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavController
-import com.example.onlineshoppingdemo.ProductDetailViewModel
-import com.example.onlineshoppingdemo.ProductDetailViewModelFactory
+import com.example.onlineshoppingdemo.data.CartViewModel
+import com.example.onlineshoppingdemo.data.CartViewModelFactory
+import com.example.onlineshoppingdemo.data.ProductDetailViewModel
+import com.example.onlineshoppingdemo.data.ProductDetailViewModelFactory
+import kotlinx.coroutines.launch
 
 /**
  * The Layout setting for product detail screen.
@@ -32,9 +40,13 @@ fun ProductDetailScreen(
     productId: Int?,
     navController: NavController,
     ) {
-    Log.d("ProductDetailScreen", "About to load product ")
+
     val context = LocalContext.current.applicationContext as Application
     val viewModel: ProductDetailViewModel = viewModel(factory = ProductDetailViewModelFactory(context))
+    val cartViewModel: CartViewModel = viewModel(factory = CartViewModelFactory(context))
+
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
 
 
@@ -48,6 +60,9 @@ fun ProductDetailScreen(
     val product = productState.value
 
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         topBar = {
             TopAppBar(
                 title = { Text("Product Details") },
@@ -64,7 +79,11 @@ fun ProductDetailScreen(
                 ),
                 modifier = Modifier.shadow(12.dp)
             )
-        }
+        },
+
+        floatingActionButton = { BtnCart(navController)}
+
+
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -76,6 +95,9 @@ fun ProductDetailScreen(
                     // Draw image
                     ProductImage(imageResId = product.imageResId)
 
+
+
+                    // Card view for product info text
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -86,21 +108,46 @@ fun ProductDetailScreen(
                             defaultElevation = 8.dp
                         )
                     ) {
-                            // Other text info
-                            Column(modifier = Modifier.padding(16.dp)) {
-                                Text(text = product.name, style = MaterialTheme.typography.headlineMedium)
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text(
-                                    text = "Price: $${product.price}",
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text(
-                                    text = "Description: ${product.description}",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
+                            Box(modifier = Modifier.fillMaxSize()) {
 
+                                // "Add to Cart" Button
+                                FloatingActionButton(
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .padding( 16.dp),
+                                    shape = CircleShape,
+                                    elevation = FloatingActionButtonDefaults.elevation(
+                                        defaultElevation = 12.dp
+                                    ),
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    onClick = {
+                                        cartViewModel.addToCart(product)
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar(
+                                                "Added to Cart!",
+                                                duration = SnackbarDuration.Short)
+                                        }
+                                    }
+                                ) {
+                                    CartWithAddIcon()
+
+                                }
+
+                                // Other text info
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    Text(text = product.name, style = MaterialTheme.typography.headlineMedium)
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        text = "Price: $${product.price}",
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        text = "Description: ${product.description}",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
+                            }
                     }
                 }
 

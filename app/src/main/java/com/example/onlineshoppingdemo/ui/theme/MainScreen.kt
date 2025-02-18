@@ -1,10 +1,12 @@
 package com.example.onlineshoppingdemo.ui.theme
 
 
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -19,7 +21,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 
 
-import com.example.onlineshoppingdemo.ProductViewModel
+import com.example.onlineshoppingdemo.data.ProductViewModel
 
 
 /**
@@ -41,7 +43,8 @@ fun MainScreen(viewModel: ProductViewModel = viewModel(), navController: NavCont
                 ),
                 modifier = Modifier.shadow(12.dp)
             )
-        }
+        },
+        floatingActionButton = { BtnCart(navController)}
     ) { paddingValues ->
         LazyColumn(modifier = Modifier.padding(paddingValues)) {
             items(products) { product ->

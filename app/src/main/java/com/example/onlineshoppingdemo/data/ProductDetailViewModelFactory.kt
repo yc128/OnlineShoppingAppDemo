@@ -1,4 +1,4 @@
-package com.example.onlineshoppingdemo
+package com.example.onlineshoppingdemo.data
 
 import android.app.Application
 import androidx.lifecycle.ViewModel

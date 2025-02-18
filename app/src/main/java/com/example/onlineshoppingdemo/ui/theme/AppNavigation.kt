@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.onlineshoppingdemo.CartScreen
 
 
 /**
@@ -23,6 +24,16 @@ fun AppNavigation(navController: NavHostController, modifier: Modifier = Modifie
         composable("productDetail/{productId}") { backStackEntry ->
             val productId = backStackEntry.arguments?.getString("productId")?.toIntOrNull()
             ProductDetailScreen(productId = productId, navController = navController)
+        }
+
+        // cart page
+        composable("cart") {
+            CartScreen(navController = navController)
+        }
+
+        composable("orderConfirmation/{totalPrice}") { backStackEntry ->
+            val totalPrice = backStackEntry.arguments?.getString("totalPrice")?.toDouble() ?: 0.0
+            OrderConfirmationScreen(navController = navController, totalPrice = totalPrice)
         }
     }
 }

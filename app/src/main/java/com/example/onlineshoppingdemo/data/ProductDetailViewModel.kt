@@ -1,12 +1,8 @@
-package com.example.onlineshoppingdemo
-
-import com.example.onlineshoppingdemo.data.ProductDatabase
-import com.example.onlineshoppingdemo.data.ProductRepository
+package com.example.onlineshoppingdemo.data
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.onlineshoppingdemo.data.Product
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
